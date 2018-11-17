@@ -84,12 +84,18 @@ class TestDashboardPluginRequires(test_utils.PatchHelper):
             mock.call('endpoint.some-relation.changed.bin_path'),
             mock.call('endpoint.some-relation.changed.openstack_dir'),
         ])
-        self.set_flag.assert_called_once_with('some-relation.available')
+        self.set_flag.assert_has_calls([
+            mock.call('some-relation.connected'),
+            mock.call('some-relation.available'),
+        ])
 
     def test_broken(self):
         self.patch_object(requires, 'clear_flag')
         self.dashboard_req.broken()
-        self.clear_flag.assert_called_once_with('some-relation.available')
+        self.clear_flag.assert_has_calls([
+            mock.call('some-relation.available'),
+            mock.call('some-relation.connected'),
+        ])
 
     def test_publish_plugin_info(self):
         to_publish = self.patch_topublish()

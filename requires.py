@@ -39,11 +39,13 @@ class DashboardPluginRequires(Endpoint):
         clear_flag(
             self.expand_name(
                 'endpoint.{endpoint_name}.changed.openstack_dir'))
+        set_flag(self.expand_name('{endpoint_name}.connected'))
         set_flag(self.expand_name('{endpoint_name}.available'))
 
     @when_not('endpoint.{endpoint_name}.joined')
     def broken(self):
         clear_flag(self.expand_name('{endpoint_name}.available'))
+        clear_flag(self.expand_name('{endpoint_name}.connected'))
 
     @property
     def release(self):
