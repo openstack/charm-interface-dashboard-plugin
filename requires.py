@@ -74,8 +74,13 @@ class DashboardPluginRequires(Endpoint):
         """
         return self.all_joined_units.received.get('openstack_dir')
 
-    def publish_plugin_info(self, local_settings, priority):
-        """Publish information about our plugin to principal charm
+    def publish_plugin_info(self, local_settings, priority,
+                            conflicting_packages=None,
+                            install_packages=None):
+        """Publish information about our plugin to principal charm.
+
+        The conflicting_packages and install_packages allow the principal charm
+        to wholly control what is installed and what isn't.
 
         :parm local_settings: String is pasted verbatim into the
                               local_settings.py of the principal.
@@ -83,7 +88,16 @@ class DashboardPluginRequires(Endpoint):
         :param priority: Value used by principal to order the configuration
                          blobs when multiple plugin subordinates are present.
         :type priority: str
+        :param conflicting_packages: List of packages that conflict with this
+            dashboard plugin.
+        :type conflicting_packages: List[str]
+        :param install_packages: List of packages that need to be installed
+            for this dashboard plugin to work.
+        :type install_packages: List[str]
         """
         for relation in self.relations:
             relation.to_publish['local-settings'] = local_settings
             relation.to_publish['priority'] = priority
+            # NOTE(ajkavanagh) to_publish automatically converts to JSON
+            relation.to_publish['conflicting-packages'] = conflicting_packages
+            relation.to_publish['install-packages'] = install_packages
